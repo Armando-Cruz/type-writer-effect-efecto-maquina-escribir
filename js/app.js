@@ -1,10 +1,25 @@
 // Elementos interfaz
-const writerContainer = document.getElementById('writer'),
-	typedCursor = document.getElementById('typed-cursor');
-let text = 'Diseño web completo',
-	// Para borrar el texto
-	textCopy = text;
-let characters = text.length - 1;
+const writerContainer = document.getElementById('writer');
+
+// Controla el texto que se escribe
+let iText = 0;
+
+// Para una lista de textos
+const texts = [
+	'Complemento Frase 1',
+	'Complemento Frase 2',
+	'Complemento Frase 3',
+	'Complemento Frase 4',
+	'Complemento Frase 5',
+	'Complemento Frase 6',
+	'Complemento Frase 7',
+	'Complemento Frase 8'
+];
+// Para borrar el texto
+let textsCopy = [...texts];
+
+// Maneja el total de carácteres a escribir
+let characters = texts[iText].length - 1;
 
 // Controla el carácter que se escribe
 let i = 0;
@@ -18,8 +33,6 @@ function write() {
 	if (i > characters) {
 		// Restablece el contador para la proxima escritura
 		i = 0;
-		// Hace que el cursor parpadee
-		typedCursor.classList.add('typed-cursor-blink');
 		// Deja de escribir
 		clearInterval(writeProcess);
 		setTimeout(() => {
@@ -28,27 +41,35 @@ function write() {
 		}, 3000);
 		return;
 	}
-	writerContainer.innerText += text[i];
+	writerContainer.innerText += texts[iText][i];
 	++i;
 }
 
 function erase() {
-	let total = textCopy.length - 1;
+	let total = textsCopy[iText].length - 1;
 	// Cuando borre todo que deje de borrar y empiece a escribir
 	if (total <= 0) {
 		// Borra el último carácter que faltaba
-		textCopy = textCopy.substr(0, total);
-		writerContainer.innerText = textCopy;
+		textsCopy[iText] = textsCopy[iText].substr(0, total);
+		writerContainer.innerText = textsCopy[iText];
 		// Nueva copia del texto para tener algo que borrar
-		textCopy = text;
+		textsCopy = [...texts];
+		// Avanza al siguiente texto
+		++iText;
+		// Si ya se escribieron todas las palabras, que empieze de nuevo
+		if (iText >= texts.length) {
+			iText = 0;
+		}
 		// Toma el nuevo total
-		total = textCopy.length - 1;
+		total = textsCopy[iText].length - 1;
+		// Cuenta los caracteres del nuevo texto
+		characters = texts[iText].length - 1;
 		clearInterval(eraseProcess);
 		writeProcess = setInterval(write, 100);
 		return;
 	}
-	textCopy = textCopy.substr(0, total);
-	writerContainer.innerText = textCopy;
+	textsCopy[iText] = textsCopy[iText].substr(0, total);
+	writerContainer.innerText = textsCopy[iText];
 }
 
 // Dispara todo el proceso
